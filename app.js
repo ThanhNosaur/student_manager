@@ -9,7 +9,7 @@ const idTree     = new BTree(3);
 const nameTree   = new BTree(3);
 
 let searchMode    = 'id';
-let isDark        = true;
+let isDark        = false;
 let currentTreeTab = 'id';
 
 // Animation state
@@ -19,25 +19,32 @@ let animTimer    = null;
 let animSpeed    = 700;  // ms per frame
 let isPlaying    = false;
 
-// ─── SAMPLE DATA ─────────────────────────────────────────────────────────────
+const DEPTS = [
+  'Khoa Khoa học & Kỹ thuật Thông tin',
+  'Khoa Công nghệ Phần mềm',
+  'Khoa Hệ thống Thông tin',
+  'Khoa Kỹ thuật Máy tính',
+  'Khoa Mạng máy tính & Truyền thông',
+  'Khoa Khoa học Máy tính',
+];
 const SAMPLE = [
-  { id:'24521123', name:'Nguyễn Văn An',   gender:'Nam', dob:'2006-05-12', dept:'Khoa Học Máy Tính',         email:'24521123@gm.uit.edu.vn' },
-  { id:'24521124', name:'Trần Thị Bích',   gender:'Nữ',  dob:'2006-11-20', dept:'Kỹ Thuật Phần Mềm',        email:'24521124@gm.uit.edu.vn' },
-  { id:'24521125', name:'Lê Hoàng Cường',  gender:'Nam', dob:'2006-01-08', dept:'Công Nghệ Thông Tin',       email:'24521125@gm.uit.edu.vn' },
-  { id:'23521126', name:'Phạm Thị Dung',   gender:'Nữ',  dob:'2005-07-25', dept:'Mạng Máy Tính & TT',       email:'23521126@gm.uit.edu.vn' },
-  { id:'24521127', name:'Hoàng Minh Đức',  gender:'Nam', dob:'2004-03-14', dept:'Khoa Học & KT Thông Tin',   email:'24521127@gm.uit.edu.vn' },
-  { id:'24521128', name:'Đặng Thị Hà',     gender:'Nữ',  dob:'2003-09-30', dept:'Khoa Học & KT Thông Tin',   email:'24521128@gm.uit.edu.vn' },
-  { id:'24521129', name:'Phan Văn Hải',    gender:'Nam', dob:'2004-06-18', dept:'Công Nghệ Thông Tin',       email:'24521129@gm.uit.edu.vn' },
-  { id:'24521130', name:'Vũ Thị Hương',    gender:'Nữ',  dob:'2003-12-05', dept:'Kỹ Thuật Phần Mềm',        email:'24521130@gm.uit.edu.vn' },
-  { id:'24521131', name:'Trương Văn Khoa', gender:'Nam', dob:'2004-02-28', dept:'Công Nghệ Thông Tin',       email:'24521131@gm.uit.edu.vn' },
-  { id:'24521132', name:'Lý Thị Lan',      gender:'Nữ',  dob:'2003-08-15', dept:'Khoa Học & KT Thông Tin',   email:'24521132@gm.uit.edu.vn' },
-  { id:'24521133', name:'Đỗ Văn Long',     gender:'Nam', dob:'2004-04-22', dept:'Công Nghệ Thông Tin',       email:'24521133@gm.uit.edu.vn' },
-  { id:'24521134', name:'Ngô Thị Mai',     gender:'Nữ',  dob:'2003-10-10', dept:'Khoa Học & KT Thông Tin',   email:'24521134@gm.uit.edu.vn' },
-  { id:'24521135', name:'Bùi Văn Nam',     gender:'Nam', dob:'2004-05-30', dept:'Kỹ Thuật Phần Mềm',        email:'24521135@gm.uit.edu.vn' },
-  { id:'24521136', name:'Phạm Thị Oanh',   gender:'Nữ',  dob:'2003-06-15', dept:'Khoa Học & KT Thông Tin',   email:'24521136@gm.uit.edu.vn' },
-  { id:'24521137', name:'Trần Văn Phúc',   gender:'Nam', dob:'2004-08-12', dept:'Khoa Học & KT Thông Tin',   email:'24521137@gm.uit.edu.vn' },
-  { id:'24521138', name:'Lê Thị Quỳnh',    gender:'Nữ',  dob:'2003-04-20', dept:'Khoa Học & KT Thông Tin',   email:'24521138@gm.uit.edu.vn' },
-  { id:'24521139', name:'Võ Văn Sơn',      gender:'Nam', dob:'2004-07-05', dept:'Công Nghệ Thông Tin',       email:'24521139@gm.uit.edu.vn' },
+  { id:'24521123', name:'Nguyễn Văn An',   gender:'Nam', dob:'2006-05-12', dept:'Khoa Khoa học Máy tính',              email:'24521123@gm.uit.edu.vn' },
+  { id:'24521124', name:'Trần Thị Bích',   gender:'Nữ',  dob:'2006-11-20', dept:'Khoa Công nghệ Phần mềm',             email:'24521124@gm.uit.edu.vn' },
+  { id:'24521125', name:'Lê Hoàng Cường',  gender:'Nam', dob:'2006-01-08', dept:'Khoa Hệ thống Thông tin',             email:'24521125@gm.uit.edu.vn' },
+  { id:'23521126', name:'Phạm Thị Dung',   gender:'Nữ',  dob:'2005-07-25', dept:'Khoa Mạng máy tính & Truyền thông',  email:'23521126@gm.uit.edu.vn' },
+  { id:'24521127', name:'Hoàng Minh Đức',  gender:'Nam', dob:'2004-03-14', dept:'Khoa Khoa học & Kỹ thuật Thông tin', email:'24521127@gm.uit.edu.vn' },
+  { id:'24521128', name:'Đặng Thị Hà',     gender:'Nữ',  dob:'2003-09-30', dept:'Khoa Khoa học & Kỹ thuật Thông tin', email:'24521128@gm.uit.edu.vn' },
+  { id:'24521129', name:'Phan Văn Hải',    gender:'Nam', dob:'2004-06-18', dept:'Khoa Kỹ thuật Máy tính',             email:'24521129@gm.uit.edu.vn' },
+  { id:'24521130', name:'Vũ Thị Hương',    gender:'Nữ',  dob:'2003-12-05', dept:'Khoa Công nghệ Phần mềm',            email:'24521130@gm.uit.edu.vn' },
+  { id:'24521131', name:'Trương Văn Khoa', gender:'Nam', dob:'2004-02-28', dept:'Khoa Hệ thống Thông tin',            email:'24521131@gm.uit.edu.vn' },
+  { id:'24521132', name:'Lý Thị Lan',      gender:'Nữ',  dob:'2003-08-15', dept:'Khoa Khoa học & Kỹ thuật Thông tin', email:'24521132@gm.uit.edu.vn' },
+  { id:'24521133', name:'Đỗ Văn Long',     gender:'Nam', dob:'2004-04-22', dept:'Khoa Kỹ thuật Máy tính',            email:'24521133@gm.uit.edu.vn' },
+  { id:'24521134', name:'Ngô Thị Mai',     gender:'Nữ',  dob:'2003-10-10', dept:'Khoa Mạng máy tính & Truyền thông', email:'24521134@gm.uit.edu.vn' },
+  { id:'24521135', name:'Bùi Văn Nam',     gender:'Nam', dob:'2004-05-30', dept:'Khoa Công nghệ Phần mềm',           email:'24521135@gm.uit.edu.vn' },
+  { id:'24521136', name:'Phạm Thị Oanh',   gender:'Nữ',  dob:'2003-06-15', dept:'Khoa Khoa học & Kỹ thuật Thông tin',email:'24521136@gm.uit.edu.vn' },
+  { id:'24521137', name:'Trần Văn Phúc',   gender:'Nam', dob:'2004-08-12', dept:'Khoa Khoa học & Kỹ thuật Thông tin',email:'24521137@gm.uit.edu.vn' },
+  { id:'24521138', name:'Lê Thị Quỳnh',    gender:'Nữ',  dob:'2003-04-20', dept:'Khoa Khoa học Máy tính',            email:'24521138@gm.uit.edu.vn' },
+  { id:'24521139', name:'Võ Văn Sơn',      gender:'Nam', dob:'2004-07-05', dept:'Khoa Hệ thống Thông tin',           email:'24521139@gm.uit.edu.vn' },
 ];
 
 // ─── INIT ─────────────────────────────────────────────────────────────────────
@@ -99,18 +106,44 @@ function applyTheme() {
   document.getElementById('btn-theme').textContent = isDark ? '☀ Sáng' : '🌙 Tối';
 }
 
+function formatDateDMY(value) {
+  if (!value) return '—';
+  const iso = /^([0-9]{4})-([0-9]{2})-([0-9]{2})$/.exec(value);
+  if (iso) return `${iso[3]}/${iso[2]}/${iso[1]}`;
+  const dmy = /^([0-9]{1,2})\/([0-9]{1,2})\/([0-9]{4})$/.exec(value);
+  if (dmy) return `${dmy[1].padStart(2,'0')}/${dmy[2].padStart(2,'0')}/${dmy[3]}`;
+  return value;
+}
+
+function parseDateInput(value) {
+  if (!value) return '';
+  const trimmed = value.trim();
+  const iso = /^([0-9]{4})-([0-9]{2})-([0-9]{2})$/.exec(trimmed);
+  if (iso) return trimmed;
+  const dmy = /^([0-9]{1,2})\/([0-9]{1,2})\/([0-9]{4})$/.exec(trimmed);
+  if (!dmy) return '';
+  const dd = dmy[1].padStart(2,'0');
+  const mm = dmy[2].padStart(2,'0');
+  const yyyy = dmy[3];
+  const date = new Date(`${yyyy}-${mm}-${dd}`);
+  if (Number.isNaN(date.getTime())) return '';
+  return `${yyyy}-${mm}-${dd}`;
+}
+
 // ─── OPERATIONS ───────────────────────────────────────────────────────────────
 
 function handleAdd() {
   if (isPlaying) { showOp('error','⚠ Animation đang chạy — nhấn Dừng trước'); return; }
-  const id     = document.getElementById('inp-id').value.trim().toUpperCase();
-  const name   = document.getElementById('inp-name').value.trim();
-  const gender = document.getElementById('inp-gender').value;
-  const dob    = document.getElementById('inp-dob').value;
-  const dept   = document.getElementById('inp-dept').value.trim();
-  const email  = document.getElementById('inp-email').value.trim();
+  const id       = document.getElementById('inp-id').value.trim().toUpperCase();
+  const name     = document.getElementById('inp-name').value.trim();
+  const gender   = document.getElementById('inp-gender').value;
+  const dobValue = document.getElementById('inp-dob').value.trim();
+  const dob      = dobValue ? parseDateInput(dobValue) : '';
+  const dept     = document.getElementById('inp-dept').value.trim();
+  const email    = document.getElementById('inp-email').value.trim();
 
   if (!id || !name) { showOp('error','⚠ Vui lòng nhập Mã SV và Họ tên!'); return; }
+  if (dobValue && !dob) { showOp('error','⚠ Ngày sinh không hợp lệ. Dùng dd/mm/yyyy hoặc yyyy-mm-dd'); return; }
   if (students.has(id)) { showOp('error',`⚠ Mã SV "${id}" đã tồn tại!`); return; }
 
   const sv = { id, name, gender, dob, dept, email };
@@ -382,31 +415,32 @@ function updateProgress() {
 // ─── STEP LOG ─────────────────────────────────────────────────────────────────
 
 const TYPE_META = {
-  traverse:     { icon: '🔍', cls: 'log-traverse', badge: 'Duyệt' },
-  insert:       { icon: '➕', cls: 'log-insert',   badge: 'Chèn' },
-  split:        { icon: '✂',  cls: 'log-split',    badge: 'Split' },
-  'push-median':{ icon: '⬆',  cls: 'log-split',    badge: 'Đẩy median' },
-  'new-root':   { icon: '🌱', cls: 'log-split',    badge: 'Root mới' },
-  delete:       { icon: '🗑', cls: 'log-delete',   badge: 'Xóa' },
-  replace:      { icon: '↔',  cls: 'log-delete',   badge: 'Thay thế' },
-  rotate:       { icon: '🔄', cls: 'log-rotate',   badge: 'Xoay' },
-  merge:        { icon: '⊕',  cls: 'log-merge',    badge: 'Merge' },
-  shrink:       { icon: '🔼', cls: 'log-delete',   badge: 'Co root' },
-  'search-found':{ icon: '✅', cls: 'log-found',   badge: 'Tìm thấy' },
-  'not-found':  { icon: '❌', cls: 'log-notfound', badge: 'Không thấy' },
-  done:         { icon: '✓',  cls: 'log-done',     badge: 'Xong' },
+  traverse:       { cls: 'log-traverse', badge: 'Duyệt'      },
+  insert:         { cls: 'log-insert',   badge: 'Chèn'        },
+  split:          { cls: 'log-split',    badge: 'Split'       },
+  'push-median':  { cls: 'log-split',    badge: 'Đẩy median'  },
+  'new-root':     { cls: 'log-split',    badge: 'Root mới'    },
+  delete:         { cls: 'log-delete',   badge: 'Xóa'         },
+  replace:        { cls: 'log-delete',   badge: 'Thay thế'    },
+  rotate:         { cls: 'log-rotate',   badge: 'Xoay'        },
+  merge:          { cls: 'log-merge',    badge: 'Merge'       },
+  shrink:         { cls: 'log-delete',   badge: 'Co root'     },
+  'search-found': { cls: 'log-found',    badge: 'Tìm thấy'   },
+  'not-found':    { cls: 'log-notfound', badge: 'Không thấy' },
+  done:           { cls: 'log-done',     badge: 'Xong'        },
 };
 
 function addFrameToLog(frame, idx) {
   const list = document.getElementById('step-log-list');
-  const meta = TYPE_META[frame.type] || { icon: '→', cls: '', badge: frame.type };
+  const meta = TYPE_META[frame.type] || { cls: '', badge: frame.type };
   const div = document.createElement('div');
   div.className = `log-item ${meta.cls}`;
+  // Làm sạch label: bỏ emoji prefix nếu có (vì eventsToFrames đã thêm vào label)
+  const cleanLabel = frame.label.replace(/^[✂⬆🌱↩↪↻↺⊕🔼🔍➕✅❌✓→]\s*/u, '');
   div.innerHTML = `
     <span class="log-num">${idx + 1}</span>
     <span class="log-badge">${meta.badge}</span>
-    <span class="log-icon">${meta.icon}</span>
-    <span class="log-text">${frame.label}</span>`;
+    <span class="log-text">${cleanLabel}</span>`;
   list.appendChild(div);
   div.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 }
@@ -588,9 +622,22 @@ function buildSVG(root, highlightIds, hlKey, hlType) {
           textLength="${f(KW-14)}" lengthAdjust="spacingAndGlyphs">${xe(disp)}</text>`;
       });
 
-      // Badge
-      const badgeTxt = node.isLeaf ? 'Lá' : `Nội (${node.keys.length}k, ${node.children.length}c)`;
-      const badgeCls = node.isLeaf ? 'badge-leaf' : 'badge-int';
+      // Badge below node
+      const isRoot = (l === 0);
+      let badgeTxt, badgeCls;
+      if (isRoot && node.isLeaf) {
+        badgeTxt = 'Root · Lá';
+        badgeCls = 'badge-root';
+      } else if (isRoot) {
+        badgeTxt = `Root (${node.keys.length}k, ${node.children.length}c)`;
+        badgeCls = 'badge-root';
+      } else if (node.isLeaf) {
+        badgeTxt = 'Lá';
+        badgeCls = 'badge-leaf';
+      } else {
+        badgeTxt = `Nội (${node.keys.length}k, ${node.children.length}c)`;
+        badgeCls = 'badge-int';
+      }
       nodesSVG += `<text x="${f(x+w/2)}" y="${f(y+NH+12)}" text-anchor="middle" class="nbadge ${badgeCls}">${xe(badgeTxt)}</text>`;
     });
   }
@@ -629,9 +676,10 @@ function buildSVG(root, highlightIds, hlKey, hlType) {
     .ks-rotate  { fill:var(--ks-rot); }
     .sep { stroke:var(--sep-c); stroke-width:.8; opacity:.4; }
     .ktext { font-family:var(--fmono); font-size:10.5px; fill:var(--kt-c); font-weight:700; pointer-events:none; }
-    .nbadge { font-family:var(--fsans); font-size:8px; opacity:.55; }
+    .nbadge { font-family:var(--fsans); font-size:8px; opacity:.6; }
     .badge-leaf{ fill:var(--leaf-c); }
     .badge-int { fill:var(--int-c); }
+    .badge-root{ fill:var(--accent); opacity:.85; font-weight:700; font-size:8.5px; }
   </style></defs>
   ${typeLabel}${edgesSVG}${nodesSVG}
   </svg>`;
@@ -675,7 +723,7 @@ function addTableRow(sv, animate = false) {
     <td><span class="id-badge">${sv.id}</span></td>
     <td>${sv.name}</td>
     <td><span class="gender-tag ${sv.gender==='Nữ'?'female':''}">${sv.gender}</span></td>
-    <td>${sv.dob||'—'}</td>
+    <td>${formatDateDMY(sv.dob)}</td>
     <td>${sv.dept||'—'}</td>
     <td>${sv.email||'—'}</td>
     <td><button class="btn-row-del" onclick="quickDelete('${sv.id}')" title="Xóa">✕</button></td>`;
@@ -710,7 +758,7 @@ function buildCard(sv) {
     </div>
     <div class="result-name">${sv.name}</div>
     <div class="result-meta">
-      <span>📅 ${sv.dob||'N/A'}</span>
+      <span>📅 ${sv.dob ? formatDateDMY(sv.dob) : 'N/A'}</span>
       <span>🏛 ${sv.dept||'N/A'}</span>
       <span>✉ ${sv.email||'N/A'}</span>
     </div>
@@ -719,9 +767,10 @@ function buildCard(sv) {
 
 // ─── UI HELPERS ───────────────────────────────────────────────────────────────
 function clearForm() {
-  ['inp-id','inp-name','inp-email','inp-dept','inp-dob'].forEach(id =>
+  ['inp-id','inp-name','inp-email','inp-dob'].forEach(id =>
     document.getElementById(id).value = '');
   document.getElementById('inp-gender').selectedIndex = 0;
+  document.getElementById('inp-dept').selectedIndex = 0;
 }
 
 function showOp(type, msg) {

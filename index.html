@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="vi" data-theme="dark">
+<html lang="vi" data-theme="light">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -17,8 +17,8 @@
       <div class="logo">
         <span class="logo-icon">⬡</span>
         <div>
-          <h1>SV<span class="accent">Manager</span></h1>
-          <p class="subtitle">B-Tree Index · Order 3 · maxKeys=2 · maxChildren=3</p>
+          <h1>Quản Lý Sinh Viên <span class="accent">UIT</span></h1>
+          <p class="subtitle">Đặng Tuấn Thanh - 24521617</p>
         </div>
       </div>
       <div class="header-right">
@@ -57,11 +57,19 @@
           </div>
           <div class="field">
             <label>Ngày sinh</label>
-            <input id="inp-dob" type="date" />
+            <input id="inp-dob" type="date" lang="en-GB" placeholder="dd/mm/yyyy" />
           </div>
           <div class="field">
             <label>Khoa</label>
-            <input id="inp-dept" type="text" placeholder="VD: Công nghệ thông tin" />
+            <select id="inp-dept">
+              <option value="">— Chọn khoa —</option>
+              <option>Khoa Khoa học &amp; Kỹ thuật Thông tin</option>
+              <option>Khoa Công nghệ Phần mềm</option>
+              <option>Khoa Hệ thống Thông tin</option>
+              <option>Khoa Kỹ thuật Máy tính</option>
+              <option>Khoa Mạng máy tính &amp; Truyền thông</option>
+              <option>Khoa Khoa học Máy tính</option>
+            </select>
           </div>
           <div class="field">
             <label>Email</label>
