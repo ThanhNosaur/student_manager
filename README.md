@@ -23,7 +23,7 @@
 - Delete: Xoay key từ sibling hoặc merge node khi thiếu
 - Search: Duyệt từ root theo thứ tự key
 
-## 🗂 Cấu trúc thư mục
+## Cấu trúc thư mục
 
 ```
 student-btree-app/
@@ -49,14 +49,14 @@ student-btree-app/
 | Xóa | **O(log n)** | O(n) |
 | Không gian | O(n) | — |
 
-## 🔧 Thông tin kỹ thuật
+## Thông tin kỹ thuật
 
 - **Ngôn ngữ**: HTML + CSS + JavaScript
 - **Visualizer**: SVG được sinh động theo thời gian thực
 - **Không cần backend**: Chạy hoàn toàn trên trình duyệt
 - **Responsive**: Hỗ trợ màn hình nhỏ
 
-## 📝 Thông tin sinh viên
+## Thông tin sinh viên
 
 Mỗi sinh viên gồm các trường:
 - **Mã SV** (khóa chính, index 1)
