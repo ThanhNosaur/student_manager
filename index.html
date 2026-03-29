@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="vi" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Quản Lý Sinh Viên — B-Tree Order 3</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+<div class="app">
+
+  <!-- ── HEADER ── -->
+  <header class="header">
+    <div class="header-inner">
+      <div class="logo">
+        <span class="logo-icon">⬡</span>
+        <div>
+          <h1>SV<span class="accent">Manager</span></h1>
+          <p class="subtitle">B-Tree Index · Order 3 · maxKeys=2 · maxChildren=3</p>
+        </div>
+      </div>
+      <div class="header-right">
+        <div class="stats-bar">
+          <div class="stat"><span id="stat-total">0</span><label>Sinh viên</label></div>
+          <div class="stat"><span id="stat-nodes">0</span><label>B-Tree nodes</label></div>
+          <div class="stat"><span id="stat-height">0</span><label>Chiều cao</label></div>
+        </div>
+        <button class="btn-theme" id="btn-theme">☀ Sáng</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="main">
+
+    <!-- ── LEFT PANEL ── -->
+    <aside class="panel panel-left">
+
+      <section class="card">
+        <h2 class="card-title"><span class="tag">01</span> Thêm Sinh Viên</h2>
+        <div class="form-grid">
+          <div class="field">
+            <label>Mã SV <span class="req">*</span></label>
+            <input id="inp-id" type="text" placeholder="VD: 24521200" maxlength="12" />
+          </div>
+          <div class="field">
+            <label>Họ và Tên <span class="req">*</span></label>
+            <input id="inp-name" type="text" placeholder="VD: Nguyễn Văn A" />
+          </div>
+          <div class="field">
+            <label>Giới tính</label>
+            <select id="inp-gender">
+              <option value="Nam">Nam</option>
+              <option value="Nữ">Nữ</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Ngày sinh</label>
+            <input id="inp-dob" type="date" />
+          </div>
+          <div class="field">
+            <label>Khoa</label>
+            <input id="inp-dept" type="text" placeholder="VD: Công nghệ thông tin" />
+          </div>
+          <div class="field">
+            <label>Email</label>
+            <input id="inp-email" type="email" placeholder="VD: sv@gm.uit.edu.vn" />
+          </div>
+        </div>
+        <div class="form-actions">
+          <button class="btn btn-primary" id="btn-add"><span class="btn-icon">+</span> Thêm</button>
+          <button class="btn btn-ghost"   id="btn-clear-form">Xóa form</button>
+        </div>
+      </section>
+
+      <section class="card">
+        <h2 class="card-title"><span class="tag">02</span> Tìm Kiếm</h2>
+        <div class="search-tabs">
+          <button class="tab active" data-tab="id">Theo Mã SV</button>
+          <button class="tab"        data-tab="name">Theo Họ Tên</button>
+        </div>
+        <div class="search-body">
+          <div class="field">
+            <input id="inp-search" type="text" placeholder="Nhập Mã SV (VD: 24521123)..." />
+          </div>
+          <button class="btn btn-secondary" id="btn-search"><span class="btn-icon">⌕</span> Tìm kiếm</button>
+        </div>
+        <div id="search-result" class="search-result hidden"></div>
+      </section>
+
+      <section class="card">
+        <h2 class="card-title"><span class="tag">03</span> Xóa Sinh Viên</h2>
+        <div class="field" style="margin-bottom:9px">
+          <input id="inp-delete" type="text" placeholder="Nhập Mã SV cần xóa..." />
+        </div>
+        <button class="btn btn-danger" id="btn-delete"><span class="btn-icon">✕</span> Xóa sinh viên</button>
+      </section>
+
+      <section class="card">
+        <h2 class="card-title"><span class="tag">Info</span> Tính chất B-Tree Bậc 3</h2>
+        <table class="prop-table">
+          <thead><tr><th>Thành phần</th><th>Root</th><th>Nút thường</th></tr></thead>
+          <tbody>
+            <tr><td>Keys tối thiểu</td><td><span class="pv">1</span></td><td><span class="pv">1</span></td></tr>
+            <tr><td>Keys tối đa</td>   <td><span class="pv g">2</span></td><td><span class="pv g">2</span></td></tr>
+            <tr><td>Con tối thiểu</td> <td><span class="pv">2</span> <small style="color:var(--text3);font-size:9px">(≠lá)</small></td><td><span class="pv">2</span></td></tr>
+            <tr><td>Con tối đa</td>    <td><span class="pv g">3</span></td><td><span class="pv g">3</span></td></tr>
+          </tbody>
+        </table>
+      </section>
+
+    </aside>
+
+    <!-- ── RIGHT PANEL ── -->
+    <div class="panel panel-right">
+
+      <div id="op-log" class="op-log hidden">
+        <div class="op-log-inner">
+          <span class="op-icon" id="op-icon">✓</span>
+          <span id="op-message"></span>
+          <button class="op-close" id="op-close">✕</button>
+        </div>
+      </div>
+
+      <!-- Student Table -->
+      <section class="card">
+        <div class="card-header-row">
+          <h2 class="card-title"><span class="tag">Bảng</span> Dữ Liệu Sinh Viên</h2>
+          <div class="index-label"><span class="dot dot-green"></span> Primary Table</div>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Mã SV</th><th>Họ và Tên</th><th>Giới tính</th>
+                <th>Ngày sinh</th><th>Khoa / Ngành</th><th>Email</th><th></th>
+              </tr>
+            </thead>
+            <tbody id="table-body">
+              <tr class="empty-row"><td colspan="7"><div class="empty-state"><span class="empty-icon">◈</span><p>Đang tải...</p></div></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- B-Tree Index -->
+      <section class="card">
+        <div class="card-header-row">
+          <h2 class="card-title"><span class="tag">Index</span> B-Tree Chỉ Mục</h2>
+          <div class="index-label"><span class="dot dot-accent"></span> Order 3 · max 2 keys · max 3 children</div>
+        </div>
+
+        <div class="tree-tabs">
+          <button class="tree-tab active" data-tree-tab="id">
+            <span class="tree-tab-icon">🏷</span> Theo Mã SV
+          </button>
+          <button class="tree-tab" data-tree-tab="name">
+            <span class="tree-tab-icon">👤</span> Theo Họ Tên
+          </button>
+        </div>
+
+        <!-- Legend — tất cả 7 loại -->
+        <div class="tree-legend">
+          <span class="legend-item"><span class="ld ld-trav"></span> Duyệt</span>
+          <span class="legend-item"><span class="ld ld-add"></span>  Chèn</span>
+          <span class="legend-item"><span class="ld ld-del"></span>  Xóa</span>
+          <span class="legend-item"><span class="ld ld-fnd"></span>  Tìm thấy</span>
+          <span class="legend-item"><span class="ld ld-spl"></span>  Split</span>
+          <span class="legend-item"><span class="ld ld-mrg"></span>  Merge</span>
+          <span class="legend-item"><span class="ld ld-rot"></span>  Xoay</span>
+        </div>
+
+        <!-- Animation controls -->
+        <div id="anim-panel" class="anim-panel hidden">
+          <div class="anim-progress-wrap">
+            <div class="anim-track"><div class="anim-fill" id="prog-fill"></div></div>
+            <span id="step-counter">—</span>
+          </div>
+          <div class="anim-btns">
+            <button class="btn-step" id="btn-prev" disabled title="Bước trước">◀</button>
+            <button class="btn-play" id="btn-play"><span>▶</span> Chạy</button>
+            <button class="btn-step" id="btn-next" title="Bước tiếp">▶</button>
+            <div class="speed-row" style="flex:1;margin-left:8px">
+              <span class="speed-lbl">Tốc độ:</span>
+              <input type="range" id="anim-speed" class="speed-slider" min="0.25" max="4" step="0.25" value="1" />
+              <span id="speed-val">1.0x</span>
+            </div>
+            <button class="btn-reset-a" id="btn-reset">↺ Reset</button>
+          </div>
+        </div>
+
+        <!-- Step log -->
+        <div id="step-log" class="step-log hidden">
+          <div class="step-log-hdr">Nhật ký thao tác</div>
+          <div class="step-log-list" id="step-log-list"></div>
+        </div>
+
+        <!-- SVG -->
+        <div id="btree-container" class="btree-container">
+          <div class="tree-empty"><span class="empty-icon">⬡</span><p>Đang tải...</p></div>
+        </div>
+
+      </section>
+    </div>
+  </main>
+</div>
+
+<script src="btree.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
